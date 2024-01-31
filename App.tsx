@@ -1,20 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import QuadroScreen from './screens/Quadro';
+import CanvasComponent from './components/Canvas';
+import DrawComponent from './components/CanvasTeste2';
+import QuadroScreenTeste from './screens/QuadroTeste';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <QuadroScreen/>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
