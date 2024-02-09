@@ -2,7 +2,7 @@
 
 import { Children, useRef, useState } from 'react';
 import { View, ImageBackground, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { Canvas, useTouchHandler, SkPath, Skia, Path, SkPaint, PaintStyle, SkiaPictureView, SkCanvas } from '@shopify/react-native-skia';
+import { Canvas, useTouchHandler, SkPath, Skia, Path, SkPaint, PaintStyle, SkiaPictureView, SkCanvas, useDrawCallback, SkiaView } from '@shopify/react-native-skia';
 
 interface IPath {
   path: SkPath;
@@ -57,19 +57,18 @@ const QuadroScreen = () => {
         }
     })
 
+  const onDraw = useDrawCallback((canvas, info)=>{
+    onTouch(info.touches)
+    canvasRef.current = canvas;
+  }, [])  
+
   return (
     <ImageBackground
       source={require('../assets/cenarioBg.png')}
       style={styles.backgroundImage}
     >
       
-      <SkiaPictureView style={styles.containerCanvas}>
-            <Canvas style={styles.containerCanvas2} onTouch={onTouch}>
-                {Children.toArray(paths.map((value) => (
-                    <Path path={value.path} paint={value.paint} />
-                )))}
-            </Canvas>
-        </SkiaPictureView>
+    
       
 
       <View style={styles.container}>
@@ -107,13 +106,21 @@ const QuadroScreen = () => {
         </View>
 
         <Image source={require('../assets/topBoard.png')} style={styles.topBoardImg}/>
-
-        <Image source={require('../assets/bottomBoard.png')} style={styles.bottomBoardImg}/>
-
-        <Image source={require('../assets/pintor.png')} style={styles.personagemImg}/>
-        
+        <Image source={require('../assets/bottomBoard.png')} style={styles.bottomBoardImg}/>         
 
       </View>
+
+      <>
+      <Canvas style={styles.containerCanvas2} onTouch={onTouch}>
+          {Children.toArray(paths.map((value) => (
+              <Path path={value.path} paint={value.paint} />
+          )))}
+      </Canvas>
+      <SkiaView style={styles.containerSkiaView} onDraw={onDraw}/>
+    </>
+
+    <Image source={require('../assets/pintor.png')} style={styles.personagemImg}/>
+
     </ImageBackground>
   );
 };
@@ -204,7 +211,7 @@ const styles = StyleSheet.create({
     width: 180, 
     height: 300,
   },
-  containerCanvas:{
+  containerCanvas2:{
     width:900, 
     height:454, 
     backgroundColor:"white",
@@ -213,10 +220,15 @@ const styles = StyleSheet.create({
     top: 40,
     //backgroundColor: 'transparent',
   },
-  containerCanvas2:{
+  containerSkiaView:{
     flex:1, 
-    backgroundColor:"white",
+    zIndex:10,
     position:'absolute',
+    //backgroundColor:"blue",
+    width:900, 
+    height:454,
+    left: 80,
+    top: 40,
   }
 });
 
